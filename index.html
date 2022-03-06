@@ -17,10 +17,21 @@
         
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <style>
+            .custom-card {
+                border: 0px;
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+            .nopadding {
+                padding: 0 !important;
+                
+             }
+        </style>
     </head>
 
     <body class="font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover" style="background-image:url('https://images.unsplash.com/photo-1637852846765-f6a2081394b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8');">
-        <div class="row">
+        <div class="row nopadding">
             <div class="col-lg-3">
                 <div class="flex items-center lg:w" style="margin-top:20vh;"  >
                     <!--Main Col-->
@@ -61,73 +72,54 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9" style="margin-top:10vh;">
-                <div class="row mt-5">
-                    <h3>Experience & Education</h3>
+            <div class="col-lg-9 mx-sm-2" style="margin-top:2vh;">
+                <div class="row mt-5 text-white  ">
+                    <h3 class="nopadding">Experience & Education</h3>
                 </div>
-                <div class="row mb-5">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://user-images.githubusercontent.com/15321738/89792114-c0aad600-db41-11ea-92de-437b0aae65a1.PNG" class="card-img-top" alt="...">
-                        <div class="card-body">
-                          <h5 class="card-title">Card title</h5>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                          <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                      </div>
+                <div class="row mb-5" id="experience">
+                    
                 </div>
-                <div class="row mt-5">
-                    <h3>Projects</h3>
+                <div class="row mt-5 text-white">
+                    <h3 class="nopadding">Projects</h3>
                 </div>
-                <div class="row mb-5" >
-                    <div class="card" style="width: 18rem;">
-                        <img src="..." class="card-img-top" alt="...">
-                        <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
+                <div class="row mb-5" id="project">
+                    
                 </div>
             </div>
         </div>
        
-          <!-- Pin to top right corner
-          <div class="absolute top-0 right-0 h-12 w-18 p-4">
-              <button class="js-change-theme focus:outline-none">🌙</button>
-          </div>
-            -->
+          
           <script src="https://unpkg.com/popper.js@1/dist/umd/popper.min.js"></script>
           <script src="https://unpkg.com/tippy.js@4"></script>
           <script>
-              //Init tooltips
-              tippy('.link',{
-                placement: 'bottom'
-              })
-      
-              //Toggle mode
-              const toggle = document.querySelector('.js-change-theme');
-              const body = document.querySelector('body');
-              const profile = document.getElementById('profile');
+              let projectElement = document.getElementById("project");
+              let experienceElement = document.getElementById("experience");
               
-              
-              toggle.addEventListener('click', () => {
-      
-                if (body.classList.contains('text-gray-900')) {
-                  toggle.innerHTML = "☀️";
-                  body.classList.remove('text-gray-900');
-                  body.classList.add('text-gray-100');
-                  profile.classList.remove('bg-white');
-                  profile.classList.add('bg-gray-900');
-                } else
+              let dataExperience = [
                 {
-                  toggle.innerHTML = "🌙";
-                  body.classList.remove('text-gray-100');
-                  body.classList.add('text-gray-900');
-                  profile.classList.remove('bg-gray-900');			
-                  profile.classList.add('bg-white');
-                  
+                    "title": "Kuliah / College",
+                    "text" : "Institut Teknologi Harapan Bangsa, Bandung, Indonesia <br> Informatics Engineering Student <br> Nominated in Dean’s List for 2 semester <br> Present",
+                    "link" : "https://www.ithb.ac.id/",
+                    "img" : "img/ithb.png"
+                },
+                {
+                    "title": "SMA / High School",
+                    "text" : "SMA Santa Angela, Bandung, Indonesia <br> May 2019",
+                    "link" : "https://smasta.santa-angela.sch.id/",
+                    "img" : "img/serviam.png"
                 }
-              });
-              
+              ];
+
+              for(let i=0;i<dataExperience.length; i++){
+                experienceElement.innerHTML += ` <div class="card custom-card mr-5 col-lg-3 nopadding">
+                    <img src="${dataExperience[i].img}" class="card-img-top" alt="Image ${dataExperience[i].title}" style="height:10rem; object-fit:contain;">
+                    <div class="card-body">
+                      <h5 class="card-title">${dataExperience[i].title}</h5>
+                      <p class="card-text">${dataExperience[i].text}</p>
+                      <a href="${dataExperience[i].link}" class="btn btn-primary">Explore Now</a>
+                    </div>
+                </div>`;
+              }
           </script>
           
       </body>
