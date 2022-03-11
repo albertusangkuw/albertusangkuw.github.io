@@ -1,10 +1,11 @@
 # albertusangkuw.github.io
 ### Kontent
-- Sentiment Analysiss
 - Crossy Road Agent
-- Crossword
+- E Music
 - Tesla Clone
 - Sia
-- E MMMusic
-- Cheems
 - SosMed
+
+- Sentiment Analysiss
+- Crossword
+- Cheems

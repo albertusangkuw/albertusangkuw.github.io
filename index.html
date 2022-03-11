@@ -14,7 +14,7 @@
         -->
         <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/> 
         <!--Replace with your tailwind.css once created-->
-        
+        <link rel="icon" href="./img/favicon.ico">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <style>
@@ -33,7 +33,7 @@
     <body class="font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover" style="background-image:url('https://images.unsplash.com/photo-1637852846765-f6a2081394b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8');">
         <div class="row nopadding">
             <div class="col-lg-3">
-                <div class="flex items-center lg:w" style="margin-top:20vh;"  >
+                <div class="flex items-center lg:w" style="margin-top:12vh;"  >
                     <!--Main Col-->
                     <div id="profile" class="lg:w-3/5 rounded-lg lg:rounded-r-lg lg:rounded-l-none bg-white mx-6 lg:mx-0">
                         <div class="p-4 md:p-12 text-center lg:text-left">
@@ -72,8 +72,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9 mx-sm-2" style="margin-top:2vh;">
-                <div class="row mt-5 text-white  ">
+            <div class="col-lg-8 mx-sm-2" style="margin-top:2vh;">
+                <div class="row mt-5 text-white">
                     <h3 class="nopadding">Experience & Education</h3>
                 </div>
                 <div class="row mb-5" id="experience">
@@ -110,8 +110,48 @@
                 }
               ];
 
+              let dataProjects = [
+                {
+                    "title": "Crossy Road AI ",
+                    "text" : "Create artificial intelligence agents to complete the game and avoid obstacles",
+                    "link" : "",
+                    "img" : "img/ithb.png"
+                },
+                {
+                    "title": "Tesla Clone",
+                    "text" : "Create a site similar to tesla company site",
+                    "link" : "https://smasta.santa-angela.sch.id/",
+                    "img" : "img/serviam.png"
+                },
+                {
+                    "title": "Sistem Informasi Akademik",
+                    "text" : "Desktop-based application system to carry out academic activities on a campus",
+                    "link" : "https://smasta.santa-angela.sch.id/",
+                    "img" : "img/serviam.png"
+                },
+                {
+                    "title": "Tesla Clone",
+                    "text" : "Create a site similar to tesla company site",
+                    "link" : "https://smasta.santa-angela.sch.id/",
+                    "img" : "img/serviam.png"
+                },
+                {
+                    "title": "E Music",
+                    "text" : "Android app and api system which can stream music over internet",
+                    "link" : "https://smasta.santa-angela.sch.id/",
+                    "img" : "img/serviam.png"
+                },
+                {
+                    "title": "SosMed",
+                    "text" : "Simple social media for sharing photos and information with PHP programming language",
+                    "link" : "https://smasta.santa-angela.sch.id/",
+                    "img" : "img/serviam.png"
+                },
+              ];
+              
               for(let i=0;i<dataExperience.length; i++){
-                experienceElement.innerHTML += ` <div class="card custom-card mr-5 col-lg-3 nopadding">
+                experienceElement.innerHTML += `
+                <div class="card custom-card mr-5 col-lg-4 col-10 nopadding">
                     <img src="${dataExperience[i].img}" class="card-img-top" alt="Image ${dataExperience[i].title}" style="height:10rem; object-fit:contain;">
                     <div class="card-body">
                       <h5 class="card-title">${dataExperience[i].title}</h5>
