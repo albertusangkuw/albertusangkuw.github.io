@@ -72,17 +72,17 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8 mx-sm-2" style="margin-top:2vh;">
-                <div class="row mt-5 text-white">
+            <div class="col-lg-9" style="margin-top:2vh;">
+                <div class="row mt-5 text-white mx-sm-2">
                     <h3 class="nopadding">Experience & Education</h3>
                 </div>
-                <div class="row mb-5" id="experience">
+                <div class="row mx-sm-2 p-3" id="experience">
                     
                 </div>
-                <div class="row mt-5 text-white">
+                <div class="row mt-5 text-white mx-sm-2">
                     <h3 class="nopadding">Projects</h3>
                 </div>
-                <div class="row mb-5" id="project">
+                <div class="row mx-sm-2 gy-5" id="project">
                     
                 </div>
             </div>
@@ -94,13 +94,15 @@
           <script>
             function componentCardList(data){
                 return `
-                <div class="card custom-card mr-5 col-lg-4 col-10 nopadding">
-                    <img src="${data.img}" class="card-img-top" alt="Image ${data.title}" style="height:10rem; object-fit:contain;">
-                    <div class="card-body">
-                      <h5 class="card-title">${data.title}</h5>
-                      <h6 class="card-subtitle mb-2 text-muted">${data.date}</h6>
-                      <p class="card-text">${data.text}</p>
-                      <a href="${data.link}" class="btn btn-primary">Explore Now</a>
+                <div class="col-lg-4 col-10">
+                    <div class="card custom-card">
+                        <img src="${data.img}" class="card-img-top" alt="Image ${data.title}" style="height:10rem; object-fit:contain;">
+                        <div class="card-body">
+                        <h5 class="card-title">${data.title}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">${data.date}</h6>
+                        <p class="card-text">${data.text}</p>
+                        <a href="${data.link}" class="btn btn-primary">Explore Now</a>
+                        </div>
                     </div>
                 </div>`;
             }
@@ -120,7 +122,7 @@
                 "title": "Assistant Lecturer for Object-Oriented Programming and Database lab class",
                 "text" : "Guided students in learning about database concepts, able to design database and database implementation. Developed the ability to design, analyze, and create object-based computer systems optimally and effectively.",
                 "link" : "https://www.ithb.ac.id/",
-                "date" : "August 2021 – Desember 2021",
+                "date" : "August 2021-Desember 2021",
                 "img" : "img/ithb.png"
                 },
                 {
@@ -130,13 +132,14 @@
                     "date" : "2019-Present",
                     "img" : "img/ithb.png"
                 },
-                {
+               /* {
                     "title": "High School",
                     "text" : "SMA Santa Angela, Bandung, Indonesia",
                     "link" : "https://smasta.santa-angela.sch.id/",
                     "date" : "2017-2019",
                     "img" : "img/serviam.png"
                 }
+                */
               ];
 
               let dataProjects = [
@@ -179,7 +182,7 @@
               ];
 
               for(let i=0;i<dataExperience.length; i++){
-                experienceElement.innerHTML += componentCardList(dataProjects[i]);  
+                experienceElement.innerHTML += componentCardList(dataExperience[i]);  
               }
 
               for(let i=0;i<dataProjects.length; i++){
