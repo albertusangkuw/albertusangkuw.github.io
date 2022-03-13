@@ -75,22 +75,24 @@
                     </div>
                 </div>
             </div>
-            <div class="col col-lg-9 nopadding" style="margin-top:2vh;">
-                <div class="row mt-5 text-white">
+            <div class="col col-lg-9 ml-5 lg:ml-0">
+                <div class="row mt-2 text-white">
+                    <div class="col">
+                        <h3>Projects</h3>
+                    </div>
+                </div>
+                <div class="row mx-sm-2 gx-3" id="project">
+                </div>
+
+                <div class="row mt-2 text-white">
                     <div class="col">
                         <h3>Experience & Education</h3>
                     </div>
                 </div>
                 <div class="row mx-sm-2 gx-3" id="experience">
                 </div>
-                <div class="row mt-5 text-white">
-                    <div class="col">
-                        <h3>Projects</h3>
-                    </div>
-                </div>
-                <div class="row mx-sm-2 gx-3" id="project">
-                    
-                </div>
+
+                
             </div>
         </div>
        
@@ -157,14 +159,14 @@
                 "text" : "Android app and api system which can stream music over internet",
                 "date" : "May 2021",
                 "link" : "",
-                "img" : "img/emusic.png"
+                "img" : "img/emusic.jpg"
             },
             {
                 "title": "SosMed",
                 "text" : "Simple social media for sharing photos and information with PHP programming language",
                 "date" : "June 2020",
                 "link" : "",
-                "img" : "img/sosmed.png"
+                "img" : "img/sosmed1.png"
             },
             ];
 
@@ -176,7 +178,7 @@
                 <div class="col-lg-4 col-10 mt-3">
                     <div class="card custom-card" style="min-height:350px;">
                         <a href="${data.link}" target="_blank" >
-                            <img src="${data.img}" class="card-img-top" alt="Image ${data.title}" style="height:10rem; object-fit:contain;">
+                            <img src="${data.img}" class="card-img-top" alt="Image ${data.title}" style="height:10rem; object-fit:cover;">
                         </a>
                         <div class="card-body">
                             <h6 class="card-title">${data.title}</h6>
