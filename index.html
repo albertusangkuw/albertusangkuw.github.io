@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,14 +25,17 @@
             }
             .nopadding {
                 padding: 0 !important;
-                
-             }
+            }
+            .more {
+                 display: none;
+            }
+          
         </style>
     </head>
 
-    <body class="font-sans antialiased text-gray-900 leading-normal tracking-wider bg-cover" style="background-image:url('https://images.unsplash.com/photo-1637852846765-f6a2081394b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8');">
-        <div class="row nopadding">
-            <div class="col-lg-3">
+    <body class="antialiased bg-cover" style="background-image:url('https://images.unsplash.com/photo-1637852846765-f6a2081394b7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8');">
+        <div class="row">
+            <div class="col col-lg-3">
                 <div class="flex items-center lg:w" style="margin-top:12vh;"  >
                     <!--Main Col-->
                     <div id="profile" class="lg:w-3/5 rounded-lg lg:rounded-r-lg lg:rounded-l-none bg-white mx-6 lg:mx-0">
@@ -72,17 +75,20 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9" style="margin-top:2vh;">
-                <div class="row mt-5 text-white mx-sm-2">
-                    <h3 class="nopadding">Experience & Education</h3>
+            <div class="col col-lg-9 nopadding" style="margin-top:2vh;">
+                <div class="row mt-5 text-white">
+                    <div class="col">
+                        <h3>Experience & Education</h3>
+                    </div>
                 </div>
-                <div class="row mx-sm-2 p-3" id="experience">
-                    
+                <div class="row mx-sm-2 gx-3" id="experience">
                 </div>
-                <div class="row mt-5 text-white mx-sm-2">
-                    <h3 class="nopadding">Projects</h3>
+                <div class="row mt-5 text-white">
+                    <div class="col">
+                        <h3>Projects</h3>
+                    </div>
                 </div>
-                <div class="row mx-sm-2 gy-5" id="project">
+                <div class="row mx-sm-2 gx-3" id="project">
                     
                 </div>
             </div>
@@ -92,106 +98,146 @@
           <script src="https://unpkg.com/popper.js@1/dist/umd/popper.min.js"></script>
           <script src="https://unpkg.com/tippy.js@4"></script>
           <script>
+            let dataExperience = [
+            {
+            "title": "Assistant Lecturer for Platform-based programming and Web Programming",
+            "text" : "Guide students in learning about interactive web-based applications by implementing server-side PHP scripts and databases MySQL, and JavaScript/AJAX. Develop the ability to create software by utilizing frameworks and platforms.",
+            "link" : "#",
+            "date" : "January 2022-Present",
+            "img" : "img/ithb.png"
+            },
+            {
+            "title": "Assistant Lecturer for Object-Oriented Programming and Database lab class",
+            "text" : "Guided students in learning about database concepts, able to design database and database implementation. Developed the ability to design, analyze, and create object-based computer systems optimally and effectively.",
+            "link" : "https://www.ithb.ac.id/",
+            "date" : "August 2021-Desember 2021",
+            "img" : "img/ithb.png"
+            },
+            {
+                "title": "Institut Teknologi Harapan Bangsa - College",
+                "text" : "Bandung, Indonesia <br> Informatics Engineering Student <br> Nominated in Dean's List for  2 semester",
+                "link" : "https://www.ithb.ac.id/",
+                "date" : "2019-Present",
+                "img" : "img/ithb.png"
+            },
+            /* {
+                "title": "High School",
+                "text" : "SMA Santa Angela, Bandung, Indonesia",
+                "link" : "https://smasta.santa-angela.sch.id/",
+                "date" : "2017-2019",
+                "img" : "img/serviam.png"
+            }
+            */
+            ];
+
+            let dataProjects = [
+            {
+                "title": "Crossy Road AI ",
+                "text" : "Create artificial intelligence agents to complete the game and avoid obstacles",
+                "date" : "Desember 2021",
+                "link" : "",
+                "img" : "img/crossy.png"
+            },
+            {
+                "title": "Tesla Clone",
+                "text" : "Create a site similar to tesla company site",
+                "date" : "September 2019",
+                "link" : "",
+                "img" : "img/tesla.png"
+            },
+            {
+                "title": "Sistem Informasi Akademik",
+                "text" : "Desktop-based application system to carry out academic activities on a campus",
+                "date" : "November 2020",
+                "link" : "",
+                "img" : "img/sia.png"
+            },
+            {
+                "title": "E Music",
+                "text" : "Android app and api system which can stream music over internet",
+                "date" : "May 2021",
+                "link" : "",
+                "img" : "img/emusic.png"
+            },
+            {
+                "title": "SosMed",
+                "text" : "Simple social media for sharing photos and information with PHP programming language",
+                "date" : "June 2020",
+                "link" : "",
+                "img" : "img/sosmed.png"
+            },
+            ];
+
+            let projectElement = document.getElementById("project");
+            let experienceElement = document.getElementById("experience");
+            
             function componentCardList(data){
                 return `
-                <div class="col-lg-4 col-10">
-                    <div class="card custom-card">
-                        <img src="${data.img}" class="card-img-top" alt="Image ${data.title}" style="height:10rem; object-fit:contain;">
+                <div class="col-lg-4 col-10 mt-3">
+                    <div class="card custom-card" style="min-height:350px;">
+                        <a href="${data.link}" target="_blank" >
+                            <img src="${data.img}" class="card-img-top" alt="Image ${data.title}" style="height:10rem; object-fit:contain;">
+                        </a>
                         <div class="card-body">
-                        <h5 class="card-title">${data.title}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">${data.date}</h6>
-                        <p class="card-text">${data.text}</p>
-                        <a href="${data.link}" class="btn btn-primary">Explore Now</a>
+                            <h6 class="card-title">${data.title}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">${data.date}</h6>
+                            <p class="card-text" id="${btoa(data.title)}_p">${data.text}</p>
                         </div>
                     </div>
                 </div>`;
             }
 
-              let projectElement = document.getElementById("project");
-              let experienceElement = document.getElementById("experience");
-              
-              let dataExperience = [
-                {
-                "title": "Assistant Lecturer for Platform-based programming and Web Programming",
-                "text" : "Guide students in learning about interactive web-based applications by implementing server-side PHP scripts and databases MySQL, and JavaScript/AJAX. Develop the ability to create software by utilizing frameworks and platforms.",
-                "link" : "#",
-                "date" : "January 2022-Present",
-                "img" : "img/ithb.png"
-                },
-                {
-                "title": "Assistant Lecturer for Object-Oriented Programming and Database lab class",
-                "text" : "Guided students in learning about database concepts, able to design database and database implementation. Developed the ability to design, analyze, and create object-based computer systems optimally and effectively.",
-                "link" : "https://www.ithb.ac.id/",
-                "date" : "August 2021-Desember 2021",
-                "img" : "img/ithb.png"
-                },
-                {
-                    "title": "College",
-                    "text" : "Institut Teknologi Harapan Bangsa, Bandung, Indonesia <br> Informatics Engineering Student <br> Nominated in Dean’s List for 2 semester",
-                    "link" : "https://www.ithb.ac.id/",
-                    "date" : "2019-Present",
-                    "img" : "img/ithb.png"
-                },
-               /* {
-                    "title": "High School",
-                    "text" : "SMA Santa Angela, Bandung, Indonesia",
-                    "link" : "https://smasta.santa-angela.sch.id/",
-                    "date" : "2017-2019",
-                    "img" : "img/serviam.png"
+            
+            initComponentCard(dataExperience,experienceElement);
+            initComponentCard(dataProjects,projectElement);
+            initTextShort(dataProjects);
+            initTextShort(dataExperience);
+           
+            function initTextShort(data=[]){
+                for(let i=0;i<data.length; i++){
+                    let textElementItem = document.getElementById(btoa(data[i].title) + "_p" );
+                    let text = textElementItem.innerHTML;
+                    let arrText = text;
+                    let cutChar = 90;
+                    if (arrText.length < cutChar ){
+                        return;
+                    }
+                    let showTxt = arrText.substring(0,cutChar);
+                    let hiddenTxt = arrText.substring(cutChar,arrText.length);
+                    
+                    textElementItem.innerHTML = `
+                    ${showTxt}<span id="${btoa(data[i].title)}_dots">...</span><span id="${btoa(data[i].title)}_more" class="more">${hiddenTxt}</span>
+                                                <a id="${btoa(data[i].title)}_link" title="More" href="#" onclick="triggerCollapse(this);return false;">More</a>`;
                 }
-                */
-              ];
-
-              let dataProjects = [
-                {
-                    "title": "Crossy Road AI ",
-                    "text" : "Create artificial intelligence agents to complete the game and avoid obstacles",
-                    "link" : "",
-                    "img" : "img/ithb.png"
-                },
-                {
-                    "title": "Tesla Clone",
-                    "text" : "Create a site similar to tesla company site",
-                    "link" : "https://smasta.santa-angela.sch.id/",
-                    "img" : "img/serviam.png"
-                },
-                {
-                    "title": "Sistem Informasi Akademik",
-                    "text" : "Desktop-based application system to carry out academic activities on a campus",
-                    "link" : "https://smasta.santa-angela.sch.id/",
-                    "img" : "img/serviam.png"
-                },
-                {
-                    "title": "Tesla Clone",
-                    "text" : "Create a site similar to tesla company site",
-                    "link" : "https://smasta.santa-angela.sch.id/",
-                    "img" : "img/serviam.png"
-                },
-                {
-                    "title": "E Music",
-                    "text" : "Android app and api system which can stream music over internet",
-                    "link" : "https://smasta.santa-angela.sch.id/",
-                    "img" : "img/serviam.png"
-                },
-                {
-                    "title": "SosMed",
-                    "text" : "Simple social media for sharing photos and information with PHP programming language",
-                    "link" : "https://smasta.santa-angela.sch.id/",
-                    "img" : "img/serviam.png"
-                },
-              ];
-
-              for(let i=0;i<dataExperience.length; i++){
-                experienceElement.innerHTML += componentCardList(dataExperience[i]);  
-              }
-
-              for(let i=0;i<dataProjects.length; i++){
-                projectElement.innerHTML += componentCardList(dataProjects[i]);
-              }
-
+            }
+            function initComponentCard(data,element){
+                for(let i=0;i<data.length; i++){
+                    element.innerHTML += componentCardList(data[i]);
+                }
+            }
+            function triggerCollapse(elementBtn){
+                let idElement = elementBtn.id.split("_")[0];
+                collapseFunction(idElement + "_link", idElement + "_more", idElement + "_dots");
+            }
+            function collapseFunction(btnID, textIDMore, dotID) {
+                var dots = document.getElementById(dotID);
+                var moreText = document.getElementById(textIDMore);
+                var btnText = document.getElementById(btnID);
+                
+                if (dots.style.display === "none") {
+                    dots.style.display = "inline";
+                    btnText.innerHTML = "More";
+                    moreText.style.display = "none";
+                } else {
+                    dots.style.display = "none";
+                    btnText.innerHTML = "Less";
+                    moreText.style.display = "inline";
+                }
+            }
              
           </script>
           
       </body>
       
 </html>
+
