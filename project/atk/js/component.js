@@ -18,6 +18,23 @@ function checkInputEnableButtonSubmit(el,valueCheck = "", btnConfirmID = "") {
     }
 }
 
+function toggleSidebar() {
+    const elSidebar = document.getElementById('sidebarMenu');
+    const elMainContent = document.getElementsByTagName('main')[0];
+    if(elSidebar.style.display == 'none'){
+        elSidebar.style.display = null;
+        elSidebar.classList.add('d-md-block');
+        elMainContent.classList.remove("col-12");
+        elMainContent.classList.add("col-md-9");
+    }else{
+        elSidebar.style.display = 'none';
+        elSidebar.classList.remove('d-md-block');
+        elMainContent.classList.add("col-12");
+        elMainContent.classList.remove("col-md-9");
+        elMainContent.classList.remove("col-lg-9");
+    }
+}
+
 const peringatan = {
     data: function(konteks, jenisPeringatan, htmlData){
         const elPg = document.getElementById('progress-notif');
@@ -376,6 +393,7 @@ const modalPDF = {
             this.modalBody().innerHTML =  `Tidak didapat mengubah ke PDF harus dilakukan persetujuan terlebih dahulu`;
             return;
         }
+        this.modalBody().innerHTML = "";
         const datePermintaan = new Date(permintaan.tanggal_permintaan);
         const headerPDF = `
                 <table  class="pdf-table text-center"  cellspacing="0" cellpadding="0">
@@ -444,10 +462,7 @@ const modalPDF = {
                     <tr>
                         <td class='table-border-none' colspan="17" >&nbsp</td>
                     </tr>`;
-        this.modalBody().innerHTML = `
-                ${headerPDF}
-                <br>
-                <table class="pdf-table" cellspacing="0" cellpadding="0">
+        this.modalBody().innerHTML = `${headerPDF}<br><table class="pdf-table" cellspacing="0" cellpadding="0">
                     <tr>
                         <td class='table-border-none' colspan="17" >&nbsp</td>
                     </tr>

@@ -110,7 +110,7 @@ async function getData(name,path="",query="") {
         ls.set(`${name}`,{ hit: -1, data:newData}, 3600000 );
         return newData;
     }
-    const dataCache = ls.get(`${ref.id}`)
+    const dataCache = ls.get(`${name}_${path}_${query}`)
     if(dataCache != null && dataCache.hit == ref.hit){
         return dataCache.data;
     }
@@ -123,7 +123,7 @@ async function getData(name,path="",query="") {
             //throw new CustomError('Same Data','Try Again');
         }
         ls.remove(`${ref.id}`);
-        ls.set(`${ref.id}`,{ hit: ref.hit, data:newData}, 604800000);
+        ls.set(`${name}_${path}_${query}`,{ hit: ref.hit, data:newData}, 604800000);
         if(peringatan.remove(name) == true){
             peringatan.data(name, 'warning',
                 `<i class="fa-solid fa-arrow-rotate-right"></i>
@@ -188,11 +188,15 @@ const tableInstance = {
         pagination: true,
         search: true,
         sort: true,
+        className: {
+            td: 'custom-td',
+            th: 'custom-th',
+        },
         style: {
             table: {
                 'width': '100%'
-            }
-        },
+            },
+          },
         id_display: "table_display"
     },
     render(config){
@@ -207,17 +211,20 @@ const tableInstance = {
     async departemen(){
         this.config.columns = [
             {
-                name: 'Kode',
-                width: '20%',
+
+                id: 'Kode',
+                name: gridjs.html(`<div style="min-width:80px">Kode</div>`),
             },
             {
-                name: 'Nama',
-                width: '60%',
+                id: 'Nama',
+                name: gridjs.html(`<div style="min-width:150px">Nama</div>`),
             },
             {
-                name: 'Aksi',
+                id: 'Aksi',
+                name: gridjs.html(`<div style="min-width:100px">Aksi</div>`),
                 formatter: (_, row) =>[
                     gridjs.html(`
+
                                     <button onclick="modalEdit.departemen('${row.cells[0].data}')" class="btn btn-warning"
                                         data-bs-toggle="modal" data-bs-target="#modal-edit" >
                                         <i class="fa-solid fa-pen-to-square"></i>
@@ -225,7 +232,8 @@ const tableInstance = {
                                     <button onclick="modalDelete.departemen('${row.cells[0].data}')" class="btn btn-outline-danger"
                                             data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete">
                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>`)]
+                                    </button>
+                  `)]
             }
             ,
         ];
@@ -236,56 +244,68 @@ const tableInstance = {
     async pengguna(){
         this.config.columns = [
             {
-                name: 'ID',
-                width: '12%',
+                id: 'ID',
+                name: gridjs.html(`<div style="min-width:80px">ID</div>`),
             },
             {
-                name: 'Nama',
-                width: '30%',
+                id: 'Nama',
+                name: gridjs.html(`<div style="min-width:150px">Nama</div>`),
             },
             {
-                name: 'Username',
-                width: '30%',
+                id: 'Username',
+                name: gridjs.html(`<div style="min-width:150px">Username</div>`),
             },
             {
-                name: 'Dep.',
-                width: '20%',
+                id: 'Dep',
+                name: gridjs.html(`<div style="min-width:80px">Dep</div>`),
             },
             {
-                name: 'Akses',
-                width: '15%',
+                id: 'Akses',
+                name: gridjs.html(`<div style="min-width:100px">Akses</div>`),
             },
             {
-                name: 'Jabatan',
-                width: '20%',
+                id: 'Jabatan',
+                name: gridjs.html(`<div style="min-width:100px">Jabatan</div>`),
             },
             {
-                name: 'Tanggal Buat Akun',
+                id: 'Tanggal Buat Akun',
+                name: gridjs.html(`<div style="min-width:150px">Pembuatan Akun</div>`),
             },
             {
-                name: 'Aksi',
+                id: 'Aksi',
+                name: gridjs.html(`<div style="min-width:100px">Aksi</div>`),
                 formatter: (_, row) =>[
                     gridjs.html(`
+
                             <button onclick="modalEdit.pengguna('${row.cells[0].data}')"  class="btn btn-warning"
                              data-bs-toggle="modal" data-bs-target="#modal-edit" >
                                 <i class="fa-solid fa-pen-to-square"></i>
-                            </button>`),
-                    gridjs.html(`
+                            </button>
                             <button onclick="modalDelete.pengguna('${row.cells[0].data}')" class="btn btn-outline-danger"
                                     data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete">
                                <i class="fa-solid fa-trash-can"></i>
-                            </button>`)]
+                            </button>
+                  `)]
             }
             ,
         ];
         let data = await getData('pengguna');
+        function hakAkses(hakAksesNum){
+            switch (hakAksesNum) {
+               case 1: return "Manager";
+               case 2 : return "Admin Dep.";
+               case 3 : return "GAS User";
+               case 4 : return "Super User";
+               default: return "";
+            }
+        }
         this.config.data = data.map(
             pengguna => [
                 pengguna.id,
                 pengguna.nama ,
                 pengguna.username,
                 getValueIf(pengguna.departemen, "nama", ""),
-                pengguna.hak_akses,
+                hakAkses(pengguna.hak_akses),
                 pengguna.jabatan,
                 pengguna.created_at, null]);
         this.render(this.config);
@@ -293,34 +313,37 @@ const tableInstance = {
     async jenisBarang(){
         this.config.columns = [
             {
-                name: 'Kode',
-                width: '15%',
+                id: 'Kode',
+                name: gridjs.html(`<div style="min-width:80px">Kode</div>`),
             },
             {
-                name: 'Nama',
-                width: '35%',
+                id: 'Nama',
+                name: gridjs.html(`<div style="min-width:150px">Nama</div>`),
             },
             {
-                name: 'Satuan',
-                width: '15%',
+                id: 'Satuan',
+                name: gridjs.html(`<div style="min-width:100px">Satuan</div>`),
             },
             {
-                name: 'UPC (Universal Product Code)',
+                id: 'Barcode',
+                name: gridjs.html(`<div style="min-width:150px">Barcode</div>`),
             },
             {
-                name: 'Aksi',
-                width: '15%',
+                id: 'Aksi',
+                name: gridjs.html(`<div style="min-width:100px">Aksi</div>`),
                 formatter: (_, row) =>[
                     gridjs.html(`
+
                         <button  onclick="modalEdit.jenisBarang('${row.cells[0].data}')" class="btn btn-warning"
                                 data-bs-toggle="modal" data-bs-target="#modal-edit" >
                             <i class="fa-solid fa-pen-to-square"></i>
-                        </button>`),
-                    gridjs.html(`
+                        </button>
+
                         <button onclick="modalDelete.jenisBarang('${row.cells[0].data}')" class="btn btn-outline-danger"
                                 data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete">
                            <i class="fa-solid fa-trash-can"></i>
-                        </button>`)]
+                        </button>
+                   `)]
             }
             ,
         ];
@@ -333,7 +356,7 @@ const tableInstance = {
                     jenisBarang.universal_product_code, null]);
         this.render(this.config);
     },
-    async barang(){
+    async barangRiwayat(){
         this.config.columns = ['ID', 'Periode', 'Stock', 'Status', 'Harga', 'Departemen', ' Jenis Barang',
             {
                 name: 'Aksi',
@@ -364,30 +387,98 @@ const tableInstance = {
                 barang.jenis_barang.nama + "(" + barang.kode_jenis_barang  + ")", null]).reverse();
         this.render(this.config);
     },
-    async permintaan(){
+    async barang(){
+        function hitungDibeli(diminta,tersedia){
+            let hasil = parseFloat(tersedia)-parseFloat(diminta);
+            if(hasil < 0){
+                return  Math.abs(hasil);
+            }
+            return 0;
+        }
+        this.config.autoWidth = true;
         this.config.columns = [
             {
-                name: 'ID',
-                width: '12%',
+                id: 'Kode',
+                name: gridjs.html(`<div style="min-width:80px">Kode</div>`),
             },
             {
-                name: 'Tgl. Minta',
-                width: '20%',
+                id: 'Nama',
+                name: gridjs.html(`<div style="min-width:150px">Nama</div>`),
             },
             {
-                name: 'Tenggat Wkt',
-                width: '20%',
-            },
-            {
-                name: 'Dep.' ,
-                width: '12%',
-            },
-            {
-                name:  'Diajukan' ,
+                id:'Satuan',
+                name: gridjs.html(`<div style="min-width:100px">Satuan</div>`),
 
+            }, {
+                id:'Diminta',
+                name: gridjs.html(`<div style="min-width:100px">Diminta</div>`),
+            }, {
+                id:'Tersedia',
+                name: gridjs.html(`<div style="min-width:100px">Tersedia</div>`),
+            }, {
+                id:'Hrs Dibeli',
+                name: gridjs.html(`<div style="min-width:100px">Hrs Dibeli</div>`),
+            }, {
+                id:'Diterima',
+                name: gridjs.html(`<div style="min-width:100px">Diterima</div>`),
+            }, {
+                id:'Habis',
+                name: gridjs.html(`<div style="min-width:100px">Habis</div>`),
             },
             {
-                name:  'Disetujui',
+                id: 'Aksi',
+                name: gridjs.html(`<div style="min-width:100px">Aksi</div>`),
+                formatter: (_, row) =>[
+                    gridjs.html(`
+
+                   <button onclick="modalEdit.barang('${row.cells[0].data}')" class="btn btn-warning"
+                    data-bs-toggle="modal" data-bs-target="#modal-edit" disabled>
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                `),
+                 ]
+            }];
+        let data = await getData('barang', '/supply_demand');
+        this.config.data = data.map(
+            barang => [
+                barang.kode,
+                barang.nama ,
+                barang.satuan,
+                barang.diminta,
+                barang.tersedia,
+                hitungDibeli(barang.diminta,barang.tersedia),
+                barang.diterima,
+                barang.habis,
+               ]);
+        this.render(this.config);
+    },
+    async permintaan(){
+        this.config.className.td = '';
+        this.config.className.th = '';
+        this.config.columns = [
+            {
+                id: 'ID',
+                name: gridjs.html(`<div style="min-width:80px">ID</div>`),
+            },
+            {
+                id: 'Tgl. Minta',
+                name: gridjs.html(`<div style="min-width:100px">Tgl. Minta</div>`),
+            },
+            {
+                id: 'Tenggat Wkt',
+                name: gridjs.html(`<div style="min-width:100px">Tenggat Wkt</div>`),
+            },
+            {
+                id: 'Dep.',
+                name: gridjs.html(`<div style="min-width:90px">Dep.</div>`),
+            },
+            {
+                id: 'Diajukan',
+                name: gridjs.html(`<div style="min-width:120px">Diajukan</div>`),
+            },
+            {
+                id: 'Disetujui',
+                name: gridjs.html(`<div style="min-width:120px">Disetujui</div>`),
                 formatter: (_, row) => gridjs.html(
                     getValueIf(row.cells[5].data,"",
                         `<a href="/permintaan/persetujuan/${row.cells[0].data}?redirect=/${currUser()}/permintaan" type="button" class="btn btn-secondary">
@@ -395,10 +486,11 @@ const tableInstance = {
                                 </a>` , ""))
             },
             {
-                name: 'Aksi',
+                id: 'Aksi',
+                name: gridjs.html(`<div style="min-width:200px">Aksi</div>`),
                 formatter: (_, row) =>
                     gridjs.html(`
-                    <div style="width:180px">
+
                         <button onclick="modalPDF.permintaanHR146('${row.cells[0].data}')" class="btn btn-secondary ml-1"
                         data-bs-toggle="modal" data-bs-target="#modal-pdf"  data-bs-tooltip="tooltip" data-bs-placement="bottom" title="Download / Export ke PDF" >
                             <i class="fa-solid fa-file-pdf"></i>
@@ -416,7 +508,7 @@ const tableInstance = {
                                 data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete"  data-bs-tooltip="tooltip" data-bs-placement="bottom" title="Hapus/Batalkan Data">
                            <i class="fa-solid fa-trash-can"></i>
                         </button>
-                    </div>`),
+                   `),
             }
             ,
         ];
@@ -433,7 +525,12 @@ const tableInstance = {
         this.instance.on('ready', ()=>refreshToolTip());
     },
     async permintaanBarang(){
-        this.config.columns = ['ID', 'Butuh', 'Keterangan',  'Jenis Barang' , 'Ref. Permintaan',
+        this.config.className.td = '';
+        this.config.className.th = '';
+        this.config.columns = [
+            'ID',
+            'Butuh',
+            'Keterangan',  'Jenis Barang' , 'Ref. Permintaan',
             {
                 name: 'Aksi',
                 formatter: (_, row) =>[
@@ -462,30 +559,51 @@ const tableInstance = {
         this.render(this.config);
     },
     async tandaTerima(){
-        this.config.columns =  ['ID', 'Tanggal Penerimaan', 'Penerima', {
-            name: 'Pemberi',
-            formatter: (_, row) => gridjs.html(
-                getValueIf(row.cells[3].data,"",
-                    `<a href="/tanda_terima/persetujuan/${row.cells[0].data}?redirect=/${currUser()}/tanda_terima" type="button" class="btn btn-secondary">
-                        <i class="fa-solid fa-person-circle-question"></i> Setujui Penerimaan</a>` , "")
-            )
-        }, 'Departemen',
+        this.config.className.td = '';
+        this.config.className.th = '';
+        this.config.columns =  [
             {
-                name: 'Aksi',
+                id: 'ID',
+                name: gridjs.html(`<div style="min-width:60px">ID</div>`),
+            },
+            {
+                id: 'Tgl. Penerimaan',
+                name: gridjs.html(`<div style="min-width:120px">Tgl. Penerimaan</div>`),
+            },{
+                id: 'Penerima',
+                name: gridjs.html(`<div style="min-width:120px">Penerima</div>`),
+            }
+            , {
+                id: 'Pemberi',
+                name: gridjs.html(`<div style="min-width:120px">Pemberi</div>`),
+                formatter: (_, row) => gridjs.html(
+                    getValueIf(row.cells[3].data,"",
+                        `<a href="/tanda_terima/persetujuan/${row.cells[0].data}?redirect=/${currUser()}/tanda_terima" type="button" class="btn btn-secondary">
+                            <i class="fa-solid fa-person-circle-question"></i> Setujui Penerimaan</a>` , "")
+                )
+            },{
+                id: 'Departemen',
+                name: gridjs.html(`<div style="min-width:110px">Departemen</div>`),
+            },
+            {
+                id: 'Aksi',
+                name: gridjs.html(`<div style="min-width:150px">Aksi</div>`),
                 formatter: (_, row) =>
                     gridjs.html(`
-            <button onclick="modalPDF.permintaanHR149('${row.cells[0].data}')" class="btn btn-secondary ml-1"
-                data-bs-toggle="modal" data-bs-target="#modal-pdf"  >
-                    <i class="fa-solid fa-file-pdf"></i>
-            </button>
-            <button onclick="modalEdit.tandaTerima('${row.cells[0].data}')"  class="btn btn-warning"
-            data-bs-toggle="modal" data-bs-target="#modal-edit" disabled >
-                <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button onclick="modalDelete.tandaTerima('${row.cells[0].data}')" class="btn btn-outline-danger"
-                    data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete">
-               <i class="fa-solid fa-trash-can"></i>
-            </button>
+
+                <button onclick="modalPDF.permintaanHR149('${row.cells[0].data}')" class="btn btn-secondary ml-1"
+                    data-bs-toggle="modal" data-bs-target="#modal-pdf"  >
+                        <i class="fa-solid fa-file-pdf"></i>
+                </button>
+                <button onclick="modalEdit.tandaTerima('${row.cells[0].data}')"  class="btn btn-warning"
+                data-bs-toggle="modal" data-bs-target="#modal-edit" disabled >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button onclick="modalDelete.tandaTerima('${row.cells[0].data}')" class="btn btn-outline-danger"
+                        data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete">
+                   <i class="fa-solid fa-trash-can"></i>
+                </button>
+
             `)
             }
             ,
@@ -502,6 +620,78 @@ const tableInstance = {
         this.render(this.config);
         this.instance.on('ready', ()=>refreshToolTip());
     },
+    async tandaTerimaBarang(){
+        alert("Belum dibuat");
+    },
+    async penyesuaianStok(){
+        this.config.className.td = '';
+        this.config.className.th = '';
+        this.config.columns =  [
+
+            {
+                id: 'ID',
+                name: gridjs.html(`<div style="min-width:60px">ID</div>`),
+            },
+            {
+                id: 'Tanggal',
+                name: gridjs.html(`<div style="min-width:120px">Tanggal</div>`),
+            },
+            {
+                id: 'Departemen',
+                name: gridjs.html(`<div style="min-width:100px">Departemen</div>`),
+            },
+            {
+                id: 'Pembuat',
+                name: gridjs.html(`<div style="min-width:100px">Pembuat</div>`),
+            },
+            {
+                id: 'Persetujuan',
+                name: gridjs.html(`<div style="min-width:100px">Persetujuan</div>`),
+                formatter: (_, row) => gridjs.html(
+                    getValueIf(row.cells[4].data,"",
+                        `<a href="/penyesuaian_stok/persetujuan/${row.cells[0].data}?redirect=/${currUser()}/permintaan" type="button" class="btn btn-secondary">
+                                    <i class="fa-solid fa-clipboard-check"></i> Setujui Penyesuaian
+                                </a>` , ""))
+            },
+            {
+                name: 'Aksi',
+                formatter: (_, row) =>
+                    gridjs.html(`
+                <div style="width:180px">
+                <button onclick="modalPDF.penyesuaianStok('${row.cells[0].data}')" class="btn btn-secondary ml-1"
+                data-bs-toggle="modal" data-bs-target="#modal-pdf"  data-bs-tooltip="tooltip" data-bs-placement="bottom" title="Download / Export ke PDF" >
+                    <i class="fa-solid fa-file-pdf"></i>
+                </button>
+                <button onclick="modalListBarang.penyesuaianStok('${row.cells[0].data}')" class="btn btn-info ml-1"
+                data-bs-tooltip="tooltip" data-bs-placement="bottom" title="Lihat Detail Barang"
+                 >
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </button>
+
+                <button onclick="modalEdit.penyesuaianStok('${row.cells[0].data}')" class="btn btn-warning ml-1"
+                data-bs-toggle="modal" data-bs-target="#modal-edit" disabled  data-bs-tooltip="tooltip" data-bs-placement="bottom" title="Edit Data">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button onclick="modalDelete.penyesuaianStok('${row.cells[0].data}')" class="btn btn-outline-danger ml-1"
+                        data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete"  data-bs-tooltip="tooltip" data-bs-placement="bottom" title="Hapus/Batalkan Data">
+                   <i class="fa-solid fa-trash-can"></i>
+                </button></div>`),
+            }
+        ];
+        const data = await getData('penyesuaian_stok');
+        this.config.data =  data.map(
+            penyesuaian => [
+                penyesuaian.id,
+                penyesuaian.tanggal ,
+                penyesuaian.departemen.nama + "(" + penyesuaian.departemen.kode + ")",
+                penyesuaian.pembuat.nama,
+                getValueIf(penyesuaian.persetujuan,"nama", "", null), null]).reverse();
+        this.render(this.config);
+        this.instance.on('ready', ()=>refreshToolTip());
+    },
+    async daftarBarangStok(){
+        alert("Belum dibuat");
+    }
 }
 
 function downloadPDF(){
