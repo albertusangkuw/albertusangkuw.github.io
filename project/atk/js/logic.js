@@ -180,25 +180,24 @@ async function getData(name,path="",query="") {
         ls.set(`${name}`,{ hit: -1, data:newData}, 3600000 );
         return newData;
     }
-    const dataCache = ls.get(`${name}_${path}_${query}`)
+    let newQuery  = `?x0_0=${ref.hit}`;
+    if(query != ""){
+        newQuery = query + `&x0_0=${ref.hit}`;
+    }
+    const dataCache = ls.get(`${name}_${path}_${newQuery}`)
     if(dataCache != null && dataCache.hit == ref.hit){
         return dataCache.data;
     }
 
 
     try{
-        if(query == ""){
-            query = `?x0_0=${ref.hit}`;
-        }else{
-            query += `&x0_0=${ref.hit}`;
-        }
-        const newData = await requestData(`/${name}${path}${query}`);
+        const newData = await requestData(`/${name}${path}${newQuery}`);
         if(dataCache != null && JSON.stringify(newData) === JSON.stringify(dataCache.data)){
             return dataCache.data;
             //throw new CustomError('Same Data','Try Again');
         }
         ls.remove(`${ref.id}`);
-        ls.set(`${name}_${path}_${query}`,{ hit: ref.hit, data:newData}, 604800000);
+        ls.set(`${name}_${path}_${newQuery}`,{ hit: ref.hit, data:newData}, 604800000);
         if(peringatan.remove(name) == true){
             peringatan.data(name, 'warning',
                 `<i class="fa-solid fa-arrow-rotate-right"></i>
@@ -274,13 +273,19 @@ const tableInstance = {
         columns: [],
         data: [],
         resizable: true,
-        pagination: true,
+        pagination: {
+            enabled: true,
+            limit: 20,
+            buttonsCount:1,
+        },
+        fixedHeader: true,
         search: true,
         sort: true,
         className: {
             td: 'custom-td',
             th: 'custom-th',
         },
+        height: '700px',
         style: {
             table: {
                 'width': '100%'
@@ -436,6 +441,7 @@ const tableInstance = {
             }
             ,
         ];
+
         let data = await getData('jenis_barang');
         this.config.data = data.map(
                 jenisBarang => [
@@ -445,7 +451,7 @@ const tableInstance = {
                     jenisBarang.universal_product_code, null]);
         this.render(this.config);
     },
-    async barangRiwayat(){
+    async barangRiwayat(queryFilter = ''){
         this.config.columns = ['ID', 'Periode', 'Stock', 'Status', 'Harga', 'Departemen', ' Jenis Barang',
             {
                 name: 'Aksi',
@@ -461,7 +467,7 @@ const tableInstance = {
                        <i class="fa-solid fa-trash-can"></i>
                     </button>`)]
             }];
-        let data = await getData('barang');
+        let data = await getData('barang','', queryFilter);
         const statusBarang = await getData('/barang/status');
         this.config.data = data.map(
             barang => [
@@ -475,9 +481,11 @@ const tableInstance = {
                 getValueIf(barang.departemen,key="nama",except="")  + "(" + barang.kode_departemen + ")" ,
                 barang.jenis_barang.nama + "(" + barang.kode_jenis_barang  + ")", null]).reverse();
         this.render(this.config);
+        return [['ID', 'Periode', 'Stock', 'Status', 'Harga', 'Departemen', ' Jenis Barang']].concat(this.config.data);
     },
-    async barang(){
+    async barang(queryFilter = ''){
         this.config.autoWidth = true;
+        this.config.pagination= false;
         this.config.columns = [
             {
                 id: 'Kode',
@@ -520,7 +528,7 @@ const tableInstance = {
                 `),
                  ]
             }];
-        let data = await getData('barang', '/supply_demand');
+        let data = await getData('barang', '/supply_demand',queryFilter);
         this.config.data = data.map(
             barang => [
                 barang.kode,
@@ -533,6 +541,7 @@ const tableInstance = {
                 barang.habis,
                ]);
         this.render(this.config);
+        return [['Kode', 'Nama', 'Satuan', 'Diminta', 'Tersedia', 'Dibeli', 'Diterima','Habis']].concat(this.config.data);
     },
     async permintaan(){
         this.config.className.td = '';
@@ -587,7 +596,7 @@ const tableInstance = {
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
                         <button onclick="modalDelete.permintaan('${row.cells[0].data}')" class="btn btn-outline-danger ml-1"
-                                data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete"  data-bs-tooltip="tooltip" data-bs-placement="bottom" title="Hapus/Batalkan Data">
+                               data-bs-toggle="modal" data-bs-target="#modal-confirmation-delete"  data-bs-tooltip="tooltip" data-bs-placement="bottom" title="Hapus/Batalkan Data">
                            <i class="fa-solid fa-trash-can"></i>
                         </button>
                    `),
@@ -735,7 +744,7 @@ const tableInstance = {
                 name: gridjs.html(`<div style="min-width:100px">Persetujuan</div>`),
                 formatter: (_, row) => gridjs.html(
                     getValueIf(row.cells[4].data,"",
-                        `<a href="/penyesuaian_stok/persetujuan/${row.cells[0].data}?redirect=/${currUser()}/permintaan" type="button" class="btn btn-secondary">
+                        `<a href="/penyesuaian_stok/persetujuan/${row.cells[0].data}?redirect=/${currUser()}/penyesuaian_stok" type="button" class="btn btn-secondary">
                                     <i class="fa-solid fa-clipboard-check"></i> Setujui Penyesuaian
                                 </a>` , ""))
             },
@@ -795,10 +804,11 @@ async function depSupplyDemandBarang(dep,periode){
     const barang = await getData('barang');
     const jenisBarang = await getData('jenis_barang');
     const filteredData = barang.filter((brg)=>
-        ( brg.kode_departemen == dep || brg.status == 2 ) && new Date(brg.periode).getTime() <= new Date(brg.periode).getTime()
+        ( brg.kode_departemen == dep || brg.status == 2 ) && new Date(brg.periode).getTime() <= new Date(periode).getTime()
     ).sort((a, b) => {
         return new Date(a.periode).getTime() - new Date(b.periode).getTime();
     });
+    console.log(filteredData);
 
     const tableSupply = jenisBarang.map((jb) => ({
         kode: jb.kode,
@@ -831,7 +841,10 @@ async function depSupplyDemandBarang(dep,periode){
         }else if(brg.status ==4){
             tableSupply[idx].habis += brg.stock;
             tableSupply[idx].diterima -= brg.stock;
+        }else{
+            console.log("Not Found Status");
         }
+        console.log(tableSupply[idx]);
     }
 
     return tableSupply;
@@ -843,6 +856,66 @@ function removeCardByID(id) {
         el.remove();
     }
 }
+
+function createExcel(title,sheetName,sheet2DData,mergeData){
+    function downloadFileExcel(blob, filename) {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.download = filename;
+        a.href = blobUrl;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    }
+
+    function s2ab(s) {
+        let buf = new ArrayBuffer(s.length);
+        let view = new Uint8Array(buf);
+        for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+
+    const wb = XLSX.utils.book_new();
+    wb.Props = {
+        Title: title,
+        Subject: "GAS Staff",
+        Author: "Inventori Barang Sistem",
+        CreatedDate: new Date()
+    };
+    for(let i=0; i<sheetName.length; i++){
+        wb.SheetNames.push(sheetName[i]);
+        wb.Sheets[sheetName[i]] = XLSX.utils.aoa_to_sheet(sheet2DData[i]);
+        //wb.Sheets[sheetName[i]]["!merges"] = mergeData[i];
+    }
+
+    downloadFileExcel(
+        new Blob([s2ab(XLSX.write(wb, {bookType:'xlsx',  type: 'binary'}))],
+            {type: "application/octet-stream"}),title)
+}
+
+function convertTo2D(arr){
+    if(arr.length == 0){
+        return [[]];
+    }
+    let grid = [];
+    const listKey = Object.keys(arr[0]);
+    for(const item of arr){
+        let tmp = [];
+        for(const j of listKey){
+            if(! (j  in item)){
+                tmp.push("");
+            }else{
+                tmp.push(item[j]);
+            }
+        }
+        grid.push(
+            tmp
+        );
+    }
+    return grid;
+
+}
+
 
 const  selectInstance = {
     statusBarang: [],

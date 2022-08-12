@@ -240,7 +240,7 @@ const settingsStatusBarang = {
             callback();
             return;
         }
-        getData('/barang/status').then(json => {
+        getData('barang', '/status').then(json => {
                 callback(json);
                 self.settings.load = null;
             }).catch(()=>{

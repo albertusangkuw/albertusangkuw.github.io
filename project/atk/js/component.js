@@ -288,6 +288,7 @@ const modalDelete = {
     },
     async permintaan(idData){
         this.elFormDelete().action = `/permintaan/${idData}`;
+        console.log(this.elInputDelete());
         this.elInputDelete().innerHTML = `
                 <label for="validationPenghapusData" class="form-label">
                 Tuliskan kembali <code>${idData}</code> untuk konfirmasi :</label>
@@ -595,16 +596,27 @@ const modalPDF = {
         temp.innerHTML = `${headerPDF}<br>${dataFirstPDF}`;
         let counter = 1;
         let pages = 1;
+
+        const tableSupply = await depSupplyDemandBarang(permintaan.kode_departemen,permintaan.tanggal_permintaan);
         for (const brg of permintaan.daftar_barang) {
+            const hasil = tableSupply.find((b)=> b.kode ==brg.kode_jenis_barang);
+            let stokBarang = 0;
+            if(hasil != null){
+                 stokBarang = hasil.diterima;
+            };
+            let totalPermintaan = brg.kebutuhan;
+            let kebutuhan = Math.abs(totalPermintaan+stokBarang);
+
+
              this.dataTable(pages).insertAdjacentHTML('beforeend',
         `<tr>
                 <td class='table-border-none' >&nbsp</td>
                 <td class='table-border-full p-1' >${counter}</td>
                 <td class='table-border-full p-1' colspan="4" >${brg.jenis_barang.nama}</td>
                 <td  class='table-border-full p-1' colspan="2" >${brg.jenis_barang.satuan}</td>
-                <td class='table-border-full p-1 text-center' colspan="2" >10</td>
-                <td  class='table-border-full p-1 text-center' colspan="2" >${brg.kebutuhan}</td>
-                <td  class='table-border-full p-1 text-center' colspan="2" >-99</td>
+                <td class='table-border-full p-1 text-center' colspan="2" >${stokBarang}</td>
+                <td  class='table-border-full p-1 text-center' colspan="2" >${kebutuhan}</td>
+                <td  class='table-border-full p-1 text-center' colspan="2" >${totalPermintaan}</td>
                 <td class='table-border-full p-1'  >${brg.keterangan}</td>
                 <td class='table-border-none' >&nbsp</td>
              </tr>
