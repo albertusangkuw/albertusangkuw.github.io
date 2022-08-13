@@ -275,7 +275,7 @@ const tableInstance = {
         resizable: true,
         pagination: {
             enabled: true,
-            limit: 20,
+            limit: 15,
             buttonsCount:1,
         },
         fixedHeader: true,
@@ -285,7 +285,7 @@ const tableInstance = {
             td: 'custom-td',
             th: 'custom-th',
         },
-        height: '700px',
+        // height: '700px',
         style: {
             table: {
                 'width': '100%'
